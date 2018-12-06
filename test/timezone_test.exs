@@ -7,9 +7,10 @@ defmodule TimezoneTest do
       expected = {:ok, "Asia/Bangkok"}
       assert expected == Timezone.lookup(13.739626, 100.560907)
       assert expected == Timezone.lookup("13.739626", "100.560907")
-      assert expected == Timezone.lookup(Decimal.new(13.739626), Decimal.new("100.560907"))
-      assert expected == Timezone.lookup(Decimal.new("13.739626"), Decimal.new(100.560907))
+      assert expected == Timezone.lookup(Decimal.from_float(13.739626), Decimal.new("100.560907"))
+      assert expected == Timezone.lookup(Decimal.new("13.739626"), Decimal.from_float(100.560907))
     end
+
     test "with invalid params" do
       assert {:error, "Unkownen latitude or longtitude error [] []"} == Timezone.lookup([], [])
     end
@@ -20,11 +21,16 @@ defmodule TimezoneTest do
       expected = "Asia/Bangkok"
       assert expected == Timezone.lookup!(13.739626, 100.560907)
       assert expected == Timezone.lookup!("13.739626", "100.560907")
-      assert expected == Timezone.lookup!(Decimal.new(13.739626), Decimal.new("100.560907"))
-      assert expected == Timezone.lookup!(Decimal.new("13.739626"), Decimal.new(100.560907))
+
+      assert expected ==
+               Timezone.lookup!(Decimal.from_float(13.739626), Decimal.new("100.560907"))
+
+      assert expected ==
+               Timezone.lookup!(Decimal.new("13.739626"), Decimal.from_float(100.560907))
     end
+
     test "with invalid params" do
-      assert_raise RuntimeError,  "Unkownen latitude or longtitude error [] []", fn ->
+      assert_raise RuntimeError, "Unkownen latitude or longtitude error [] []", fn ->
         Timezone.lookup!([], [])
       end
     end
@@ -35,10 +41,10 @@ defmodule TimezoneTest do
       expected = {:ok, "Asia/Bangkok"}
       assert expected == Timezone.Request.fetch("13.739626", "100.560907")
     end
+
     test "with invalid params" do
       expected = {:error, "Google Map Timezone API key is not configured."}
       assert expected == Timezone.Request.fetch("13.739626", "100.560907", nil)
     end
   end
-
 end

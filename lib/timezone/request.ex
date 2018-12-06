@@ -4,14 +4,27 @@ defmodule Timezone.Request do
   require Logger
 
   @doc false
-  @spec fetch(String.t, String.t) :: {:ok, String.t} | {:error, String.t} | {:error, HTTPoison.Error.t} | {:error, :invalid} | {:error, {:invalid, String.t}}
+  @spec fetch(String.t(), String.t()) ::
+          {:ok, String.t()}
+          | {:error, String.t()}
+          | {:error, HTTPoison.Error.t()}
+          | {:error, :invalid}
+          | {:error, {:invalid, String.t()}}
   def fetch(lat, lng, api_key \\ Application.get_env(:timezone, :api_key))
   def fetch(_lat, _lng, nil), do: {:error, "Google Map Timezone API key is not configured."}
+
   def fetch(lat, lng, api_key) do
     case Application.get_env(:timezone, :base_api_url, "https://maps.googleapis.com") do
-      nil -> {:ok, nil}
-      url ->  url <> "/maps/api/timezone/json"
-              |> parse_from_url(location: lat <> "," <> lng, timestamp: :erlang.system_time(100), key: api_key)
+      nil ->
+        {:ok, nil}
+
+      url ->
+        (url <> "/maps/api/timezone/json")
+        |> parse_from_url(
+          location: lat <> "," <> lng,
+          timestamp: :erlang.system_time(100),
+          key: api_key
+        )
     end
   end
 
@@ -25,8 +38,10 @@ defmodule Timezone.Request do
 
   defp handle_resp({:error, %HTTPoison.Error{reason: reason}}),
     do: {:error, reason}
+
   defp handle_resp({:ok, %HTTPoison.Response{status_code: 200, body: body}}),
     do: {:ok, body}
+
   defp handle_resp({:ok, %HTTPoison.Response{status_code: status_code, request_url: url}}),
     do: {:error, {status_code, url}}
 
@@ -34,15 +49,16 @@ defmodule Timezone.Request do
   defp decode_json({:ok, json}), do: Poison.decode(json)
 
   defp handle_result({:error, reason}) do
-    Logger.error "Could not fetch Google Maps API because: #{inspect reason}"
+    Logger.error("Could not fetch Google Maps API because: #{inspect(reason)}")
     {:error, reason}
   end
+
   defp handle_result({:ok, data}) do
     data
     |> Map.get("timeZoneId")
     |> handle_result
   end
+
   defp handle_result(nil), do: {:error, "Could not fetch timezone"}
   defp handle_result(timezone), do: {:ok, timezone}
-
 end

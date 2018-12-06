@@ -4,17 +4,18 @@ defmodule Timezone.Mixfile do
   @version "0.2.2"
 
   def project do
-    [app: :timezone,
-     version: @version,
-     elixir: "~> 1.5",
-     name: "Timezone",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps(),
-     # Hex
-     description: description(),
-     package: package(),
-     docs: docs()
+    [
+      app: :timezone,
+      version: @version,
+      elixir: "~> 1.7",
+      name: "Timezone",
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      deps: deps(),
+      # Hex
+      description: description(),
+      package: package(),
+      docs: docs()
     ]
   end
 
@@ -23,24 +24,27 @@ defmodule Timezone.Mixfile do
   end
 
   defp deps do
-    [{:httpoison, "~> 0.13"},
-     {:poison, "~> 3.1"},
-     {:decimal, "~> 1.4", optional: true},
-     {:ex_doc, "~> 0.18", override: true, only: :dev}]
+    [
+      {:httpoison, "~> 1.4.0"},
+      {:poison, "~> 3.0 or ~> 3.1 or ~> 4.0"},
+      {:decimal, "~> 1.6", optional: true},
+      {:ex_doc, "~> 0.19", override: true, only: :dev}
+    ]
   end
 
   defp description do
-  """
-  Simple wrapper around Google Maps Time Zone API
-  """
+    """
+    Simple wrapper around Google Maps Time Zone API
+    """
   end
 
   defp package do
-    [name: :timezone,
-     maintainers: ["Benjamin Schultzer"],
-     licenses: ["MIT"],
-     links: links(),
-     files: ["lib", "config", "mix.exs", "README*", "CHANGELOG*", "LICENSE*"]
+    [
+      name: :timezone,
+      maintainers: ["Benjamin Schultzer"],
+      licenses: ["MIT"],
+      links: links(),
+      files: ["lib", "config", "mix.exs", "README*", "CHANGELOG*", "LICENSE*"]
     ]
   end
 
@@ -54,10 +58,9 @@ defmodule Timezone.Mixfile do
 
   defp links do
     %{
-      "GitHub"    => "https://github.com/schultzer/timezone",
-      "Readme"    => "https://github.com/schultzer/timezone/blob/v#{@version}/README.md",
+      "GitHub" => "https://github.com/schultzer/timezone",
+      "Readme" => "https://github.com/schultzer/timezone/blob/v#{@version}/README.md",
       "Changelog" => "https://github.com/schultzer/timezone/blob/v#{@version}/CHANGELOG.md"
     }
   end
-
 end
