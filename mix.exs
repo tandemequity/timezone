@@ -25,7 +25,7 @@ defmodule Timezone.Mixfile do
 
   defp deps do
     [
-      {:httpoison, "~> 1.4.0"},
+      {:httpoison, "~> 1.5.0"},
       {:poison, "~> 3.0 or ~> 3.1 or ~> 4.0"},
       {:decimal, "~> 1.6", optional: true},
       {:ex_doc, "~> 0.19", override: true, only: :dev}
